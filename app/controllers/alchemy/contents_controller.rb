@@ -7,11 +7,11 @@ module Alchemy
       raise ActiveRecord::RecordNotFound
     end
 
-    respond_to :json
-
     def show
       ActiveSupport::Deprecation.warn('The Alchemy contents json API moved to `api` namespace. Please use `/api/contents` for json requests instead.')
-      respond_with @content
+      respond_to do |format|
+        format.json { render json: @content }
+      end
     end
 
   end
