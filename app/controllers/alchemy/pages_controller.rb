@@ -125,13 +125,14 @@ module Alchemy
       end
     end
 
-    def redirect_page(options={})
-      defaults = {
-        :lang => (multi_language? ? @page.language_code : nil),
-        :urlname => @page.urlname
-      }
-      options = defaults.merge(options)
-      redirect_to show_page_path(additional_params.merge(options)), :status => 301
+    # Redirects page to given url with 301 status while keeping all additional params
+    def redirect_page(options = {})
+      options = {
+        lang: (multi_language? ? @page.language_code : nil),
+        urlname: @page.urlname
+      }.merge(options)
+
+      redirect_to show_page_path(additional_params.merge(options)), status: 301
     end
 
     # Use the bare minimum to redirect to @page
@@ -145,9 +146,16 @@ module Alchemy
       redirect_to show_page_path(options), :status => 301
     end
 
+    # Returns url parameters that are not internal show page params.
+    #
+    # * action
+    # * controller
+    # * urlname
+    # * lang
+    #
     def additional_params
-      params.each do |key, value|
-        params[key] = nil if ["action", "controller", "urlname", "lang"].include?(key)
+      params.symbolize_keys.delete_if do |key, _|
+        [:action, :controller, :urlname, :lang].include?(key)
       end
     end
 
