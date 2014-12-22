@@ -44,7 +44,7 @@ module Alchemy
 
     context "requested for json format" do
       it "should render json response but warns about deprecation" do
-        expect(ActiveSupport::Deprecation).to receive(:warn)
+        expect(ActiveSupport::Deprecation).to receive(:warn).at_least(:once)
         get :show, urlname: default_language_root.urlname, format: :json
         expect(response.status).to eq(200)
         expect(response.content_type).to eq('application/json')
